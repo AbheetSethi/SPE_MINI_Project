@@ -1,0 +1,29 @@
+---
+- name: Deploy Calculator Docker Image
+  hosts: localhost
+  remote_user: abheet
+  become: false
+  tasks:
+    - name: Pull Docker Image
+      docker_image:
+        name: "calculator"
+        source: pull
+      register: docker_pull_result
+
+    - name: Display Docker Pull Result
+      debug:
+        var: docker_pull_result
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+
+    - name: Stop and Remove Existing Container (if it exists)
+      shell: |
+        docker stop calculator || true
+        docker rm calculator || true
+      ignore_errors: yes
+
+    - name: Run Docker container
+      shell: docker run -it -d --name calculator calculator
