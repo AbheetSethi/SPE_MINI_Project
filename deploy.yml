@@ -26,4 +26,4 @@
       ignore_errors: yes
 
     - name: Run Docker container
-      shell: docker run -it -d -p 8080:8080 --name calculator abheetsethi/calculator:latest
+      shell: docker run -it -d -p 8081:8080 --name calculator abheetsethi/calculator:latest
