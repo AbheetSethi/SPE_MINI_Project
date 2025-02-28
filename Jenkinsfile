@@ -18,12 +18,25 @@ pipeline {
             }
         }
 
+        stage('Debug Environment') {
+            steps {
+                sh '''
+                    echo "Current user: $(whoami)"
+                    echo "Python version: $(python3 --version)"
+                    echo "Pip version: $(pip3 --version)"
+                    echo "Docker library installed: $(pip3 list | grep docker)"
+                '''
+            }
+        }
+
         stage('Setup Environment') {
             steps {
                 sh '''
-                    # Install Python 3 and pip
-                    sudo apt-get update
-                    sudo apt-get install -y python3 python3-pip
+                    # Update package list (no sudo)
+                    apt-get update
+
+                    # Install Python 3 and pip (no sudo)
+                    apt-get install -y python3 python3-pip
 
                     # Install Docker Python library
                     pip3 install docker
