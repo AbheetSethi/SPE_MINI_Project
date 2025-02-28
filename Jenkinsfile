@@ -12,9 +12,31 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    // Checkout the code from the GitHub repository
                     git branch: 'master', url: "${GITHUB_REPO_URL}"
                 }
+            }
+        }
+
+        stage('Debug Environment') {
+            steps {
+                sh '''
+                    echo "Python Version:"
+                    python3 --version
+                    echo "Pip Version:"
+                    pip3 --version
+                    echo "Installed Docker Library:"
+                    pip3 list | grep docker
+                    echo "Ansible Version:"
+                    ansible --version
+                '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    pip3 install docker
+                '''
             }
         }
 
@@ -60,7 +82,8 @@ pipeline {
                     try {
                         ansiblePlaybook(
                             playbook: 'deploy.yml',
-                            inventory: 'inventory.ini'
+                            inventory: 'inventory.ini',
+                            extras: '-vvv -e ansible_python_interpreter=/usr/bin/python3'
                         )
                     } catch (Exception e) {
                         error("❌ Ansible playbook execution failed: ${e.message}")
