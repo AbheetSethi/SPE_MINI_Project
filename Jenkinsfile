@@ -24,45 +24,62 @@ pipeline {
                     echo "Python version: $(python3 --version)"
                     echo "Pip version: $(pip3 --version)"
                     echo "Docker library installed: $(pip3 list | grep docker)"
+                    echo "Docker version: $(docker --version)"
                 '''
             }
         }
 
         stage('Setup Environment') {
             steps {
-                sh '''
-                    # Update package list (with sudo)
-                    sudo apt-get update
+                script {
+                    try {
+                        sh '''
+                            # Update package list (with sudo)
+                            sudo apt-get update
 
-                    # Install Python 3 and pip (with sudo)
-                    sudo apt-get install -y python3 python3-pip
+                            # Install Python 3 and pip (with sudo)
+                            sudo apt-get install -y python3 python3-pip
 
-                    # Install Docker Python library
-                    pip3 install docker
+                            # Install Docker Python library
+                            pip3 install docker
 
-                    # Verify installation
-                    python3 --version
-                    pip3 --version
-                    pip3 list | grep docker
-                '''
+                            # Verify installation
+                            python3 --version
+                            pip3 --version
+                            pip3 list | grep docker
+                        '''
+                    } catch (Exception e) {
+                        error("❌ Setup Environment failed: ${e.message}")
+                    }
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                timeout(time: 10, unit: 'MINUTES') {
+                    sh 'mvn clean package'
+                }
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh "mvn test"
+                timeout(time: 5, unit: 'MINUTES') {
+                    sh "mvn test"
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE} ."
+                script {
+                    try {
+                        sh "docker build -t ${DOCKER_IMAGE} ."
+                    } catch (Exception e) {
+                        error("❌ Docker build failed: ${e.message}")
+                    }
+                }
             }
         }
 
