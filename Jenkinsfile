@@ -117,7 +117,7 @@ pipeline {
             }
         }
     }
-/*
+
     post {
     success {
         echo "Sending success email to abheeet.sethi@gmail.com"
@@ -141,5 +141,5 @@ pipeline {
         cleanWs()
     }
 }
-*/
+
 }
