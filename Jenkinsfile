@@ -117,30 +117,20 @@ pipeline {
             }
         }
     }
-/*
-    post {
-    success {
-        echo "Sending success email to abheeet.sethi@gmail.com"
-        emailext(
-            to: 'abheeet.sethi@gmail.com',
-            subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            body: """<p>The build and deployment were <b>successful!</b></p>
-                     <p>Check the build details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>"""
-        )
-    }
-    failure {
-        echo "Sending failure email to abheeet.sethi@gmail.com"
-        emailext(
-            to: 'abheeet.sethi@gmail.com',
-            subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-            body: """<p>The build or deployment <b>failed!</b></p>
-                     <p>Check the build details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>"""
-        )
-    }
-    always {
-        cleanWs()
-    }
-}
-*/
+post {
+        success {
+            mail to: 'b.thangaraju@iiitb.ac.in',
+                 subject: "Application Deployment SUCCESS: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "The build was successful!"
+        }
+        failure {
+            mail to: 'b.thangaraju@iiitb.ac.in',
+                 subject: "Application Deployment FAILURE: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "The build failed."
+        }
+        always {
+            cleanWs()
+        }
+      }
 
 }
