@@ -119,12 +119,12 @@ pipeline {
     }
 post {
         success {
-            mail to: 'b.thangaraju@iiitb.ac.in',
+            mail to: 'abheeet.sethi@gmail.com',
                  subject: "Application Deployment SUCCESS: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "The build was successful!"
         }
         failure {
-            mail to: 'b.thangaraju@iiitb.ac.in',
+            mail to: 'abheeet.sethi@gmail.com',
                  subject: "Application Deployment FAILURE: Build ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "The build failed."
         }
